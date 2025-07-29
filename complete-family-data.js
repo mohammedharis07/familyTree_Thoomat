@@ -306,70 +306,84 @@ window.family8Data = []
 window.family9Data = []
 window.family10Data = []
 
-// Function to combine all family data once all files are loaded
-function combineAllFamilyData() {
-  const allFamilies = []
-
-  // Add all family data arrays
-  if (window.family1Data) allFamilies.push(...window.family1Data)
-  if (window.family2Data) allFamilies.push(...window.family2Data)
-  if (window.family3Data) allFamilies.push(...window.family3Data)
-  if (window.family4Data) allFamilies.push(...window.family4Data)
-  if (window.family5Data) allFamilies.push(...window.family5Data)
-  if (window.family6Data) allFamilies.push(...window.family6Data)
-  if (window.family7Data) allFamilies.push(...window.family7Data)
-  if (window.family8Data) allFamilies.push(...window.family8Data)
-  if (window.family9Data) allFamilies.push(...window.family9Data)
-  if (window.family10Data) allFamilies.push(...window.family10Data)
-
-  return allFamilies
-}
-
-// Wait for all family data to load, then combine
-let loadAttempts = 0
-const maxLoadAttempts = 20
-
-function tryLoadAllFamilies() {
-  loadAttempts++
-
-  const combinedData = combineAllFamilyData()
-
-  if (combinedData.length > 0) {
-    window.familyData = combinedData
-    console.log("=== COMPLETE FAMILY TREE LOADED ===")
-    console.log("Total members across all families:", combinedData.length)
-    console.log("=== FAMILY BREAKDOWN ===")
-    console.log("1. A T Mohamed unny & P.M Kochu Rabiya:", window.family1Data?.length || 0, "members")
-    console.log("2. A T kunjupathumma & P.K Athakutty:", window.family2Data?.length || 0, "members")
-    console.log("3. A T Pathavu & Veetiparambil Avvutty:", window.family3Data?.length || 0, "members")
-    console.log("4. A T Nafeesakutty & M.A Bappu Moulavi:", window.family4Data?.length || 0, "members")
-    console.log("5. A.T AliKunji & P.K Kunhipathunni:", window.family5Data?.length || 0, "members")
-    console.log("6. A.T Kunjaisu & R.V Mohammed Haji:", window.family6Data?.length || 0, "members")
-    console.log("7. A.T Aminakutty & A.M Bayu:", window.family7Data?.length || 0, "members")
-    console.log("8. A T Aboobakker & Rasiya .P.N:", window.family8Data?.length || 0, "members")
-    console.log("9. A.T Zainba & Abdul Kadar:", window.family9Data?.length || 0, "members")
-    console.log("10. A T Ibrahim Kutty & Zohra Ibrahim:", window.family10Data?.length || 0, "members")
-    console.log("=====================================")
-
-    // Trigger the family tree to render if the app is ready
-    if (window.setFamilyData) {
-      window.setFamilyData(combinedData)
-    }
-  } else if (loadAttempts < maxLoadAttempts) {
-    console.log(`Waiting for family data to load... attempt ${loadAttempts}/${maxLoadAttempts}`)
-    setTimeout(tryLoadAllFamilies, 200)
-  } else {
-    console.error("Failed to load all family data after", maxLoadAttempts, "attempts")
-  }
-}
-
-// Start trying to load all families
-setTimeout(tryLoadAllFamilies, 500)
-
 // Function to set family data (for compatibility)
 window.setFamilyData = (data) => {
   window.familyData = data
   console.log("Family data updated:", data.length, "members")
 }
+
+// Wait for all individual family data to load
+function waitForFamilyData() {
+  return new Promise((resolve) => {
+    const checkData = () => {
+      if (
+        window.family1Data &&
+        window.family2Data &&
+        window.family3Data &&
+        window.family4Data &&
+        window.family5Data &&
+        window.family6Data &&
+        window.family7Data &&
+        window.family8Data &&
+        window.family9Data &&
+        window.family10Data
+      ) {
+        resolve()
+      } else {
+        setTimeout(checkData, 50)
+      }
+    }
+    checkData()
+  })
+}
+
+// Initialize complete family data
+waitForFamilyData().then(() => {
+  console.log("All family data loaded, combining...")
+
+  // Combine all family data
+  window.familyData = [
+    ...window.family1Data,
+    ...window.family2Data,
+    ...window.family3Data,
+    ...window.family4Data,
+    ...window.family5Data,
+    ...window.family6Data,
+    ...window.family7Data,
+    ...window.family8Data,
+    ...window.family9Data,
+    ...window.family10Data,
+  ]
+
+  console.log(`Complete family data loaded: ${window.familyData.length} members across 10 families`)
+
+  // Log family statistics
+  const familyStats = {
+    totalMembers: window.familyData.length,
+    families: 10,
+    generations: Math.max(...window.familyData.map((m) => m.generation)),
+    livingMembers: window.familyData.filter((m) => !m.isDeceased).length,
+    deceasedMembers: window.familyData.filter((m) => m.isDeceased).length,
+    familyHeads: window.familyData.filter((m) => m.isHead).length,
+    marriedMembers: window.familyData.filter((m) => m.spouse).length,
+    professionals: {
+      doctors: window.familyData.filter((m) => m.profession && m.profession.toLowerCase().includes("doctor")).length,
+      engineers: window.familyData.filter((m) => m.profession && m.profession.toLowerCase().includes("engineer"))
+        .length,
+      teachers: window.familyData.filter((m) => m.profession && m.profession.toLowerCase().includes("teacher")).length,
+      business: window.familyData.filter((m) => m.profession && m.profession.toLowerCase().includes("business")).length,
+      it: window.familyData.filter(
+        (m) =>
+          m.profession &&
+          (m.profession.toLowerCase().includes("software") || m.profession.toLowerCase().includes("it")),
+      ).length,
+    },
+  }
+
+  console.log("Family Statistics:", familyStats)
+
+  // Make stats available globally
+  window.familyStats = familyStats
+})
 
 console.log("Complete family data loader initialized")

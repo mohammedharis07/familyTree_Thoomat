@@ -1,15 +1,16 @@
-// Debug logging
-console.log("Script.js loading...")
+// Enhanced Family Tree Application with Futuristic Design
+console.log("🌳 Futuristic Family Tree - Initializing...")
 
-// Global state
+// Global Application State
 let currentViewMode = "generation"
 let collapsedFamilies = new Set()
 let currentSearchTerm = ""
 let filteredMembers = []
 let isMobileMenuOpen = false
 let familyData = []
+let isLoading = true
 
-// Branch color mapping
+// Branch color mapping for visual distinction
 const branchColors = [
   "branch-rose",
   "branch-blue",
@@ -21,98 +22,149 @@ const branchColors = [
   "branch-pink",
 ]
 
-// Initialize the application
+// Initialize the application when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM Content Loaded")
+  console.log("🚀 DOM loaded, starting initialization...")
 
-  // Show loading message
-  showLoadingMessage()
+  showLoadingScreen()
+  initializeParticleSystem()
 
-  // Try to load family data with multiple attempts
+  // Try to load family data with progressive retry
   let attempts = 0
-  const maxAttempts = 10
+  const maxAttempts = 15
 
   const tryLoadData = () => {
     attempts++
-    console.log(`Attempt ${attempts} to load family data...`)
+    console.log(`📊 Loading attempt ${attempts}/${maxAttempts}...`)
 
     if (window.familyData && window.familyData.length > 0) {
       familyData = window.familyData
       filteredMembers = [...familyData]
-      console.log("Family data loaded successfully:", familyData.length, "members")
 
-      hideLoadingMessage()
-      showApp()
+      console.log(`✅ Family data loaded successfully: ${familyData.length} members`)
+      console.log(`📈 Statistics:`, window.familyStats)
+
+      hideLoadingScreen()
+      showApplication()
       initializeEventListeners()
-      createDataParticles()
+      initializeParticleBackground()
       renderFamilyTree()
+      updateStatsPanel()
+
+      isLoading = false
     } else if (attempts < maxAttempts) {
-      console.log(`No family data found, retrying in ${attempts * 100}ms...`)
       setTimeout(tryLoadData, attempts * 100)
     } else {
-      console.error("Failed to load family data after", maxAttempts, "attempts")
-      showErrorMessage()
+      console.error("❌ Failed to load family data after maximum attempts")
+      showErrorScreen()
     }
   }
 
-  // Start trying to load data after a small delay
-  setTimeout(tryLoadData, 100)
+  // Start loading with a small delay
+  setTimeout(tryLoadData, 200)
 })
 
-// Loading and error state functions
-function showLoadingMessage() {
+// Loading Screen Management
+function showLoadingScreen() {
   const loading = document.getElementById("loading-message")
-  const container = document.getElementById("family-tree-container")
+  const app = document.getElementById("app")
   const error = document.getElementById("error-message")
-  const app = document.getElementById("app")
 
-  if (loading) loading.style.display = "flex"
-  if (container) container.style.display = "none"
-  if (error) error.style.display = "none"
-  if (app) app.style.display = "none"
-}
-
-function hideLoadingMessage() {
-  const loading = document.getElementById("loading-message")
-  const container = document.getElementById("family-tree-container")
-  const app = document.getElementById("app")
-
-  if (loading) loading.style.display = "none"
-  if (container) container.style.display = "block"
-  if (app) {
-    app.style.display = "block"
-    console.log("App is now visible")
-  }
-}
-
-function showErrorMessage() {
-  const loading = document.getElementById("loading-message")
-  const container = document.getElementById("family-tree-container")
-  const error = document.getElementById("error-message")
-  const app = document.getElementById("app")
-
-  if (loading) loading.style.display = "none"
-  if (container) container.style.display = "none"
-  if (error) error.style.display = "flex"
-  if (app) app.style.display = "none"
-}
-
-function showApp() {
-  const app = document.getElementById("app")
-  const loading = document.getElementById("loading-message")
-
-  if (app) {
-    app.style.display = "block"
-    console.log("App shown successfully")
-  }
   if (loading) {
-    loading.style.display = "none"
+    loading.style.display = "flex"
+    // Animate progress bar
+    const progressBar = loading.querySelector(".progress-bar")
+    if (progressBar) {
+      progressBar.style.animation = "loading-progress 2s ease-in-out infinite"
+    }
+  }
+  if (app) app.style.display = "none"
+  if (error) error.style.display = "none"
+}
+
+function hideLoadingScreen() {
+  const loading = document.getElementById("loading-message")
+  if (loading) {
+    loading.style.opacity = "0"
+    setTimeout(() => {
+      loading.style.display = "none"
+    }, 500)
   }
 }
 
-// Initialize all event listeners
+function showErrorScreen() {
+  const loading = document.getElementById("loading-message")
+  const app = document.getElementById("app")
+  const error = document.getElementById("error-message")
+
+  if (loading) loading.style.display = "none"
+  if (app) app.style.display = "none"
+  if (error) error.style.display = "flex"
+}
+
+function showApplication() {
+  const app = document.getElementById("app")
+  if (app) {
+    app.style.display = "block"
+    app.style.opacity = "0"
+    setTimeout(() => {
+      app.style.opacity = "1"
+      app.style.transition = "opacity 0.5s ease-in-out"
+    }, 100)
+  }
+}
+
+// Particle System Initialization
+function initializeParticleSystem() {
+  const particlesContainer = document.querySelector(".loading-particles")
+  if (!particlesContainer) return
+
+  // Create floating particles for loading screen
+  for (let i = 0; i < 20; i++) {
+    const particle = document.createElement("div")
+    particle.style.cssText = `
+            position: absolute;
+            width: ${Math.random() * 6 + 2}px;
+            height: ${Math.random() * 6 + 2}px;
+            background: rgba(255, 255, 255, ${Math.random() * 0.5 + 0.3});
+            border-radius: 50%;
+            top: ${Math.random() * 100}%;
+            left: ${Math.random() * 100}%;
+            animation: float ${Math.random() * 3 + 2}s ease-in-out infinite;
+            animation-delay: ${Math.random() * 2}s;
+        `
+    particlesContainer.appendChild(particle)
+  }
+}
+
+function initializeParticleBackground() {
+  const particlesContainer = document.querySelector(".floating-particles")
+  if (!particlesContainer) return
+
+  // Enhanced particle system for main application
+  particlesContainer.innerHTML = ""
+
+  for (let i = 0; i < 50; i++) {
+    const particle = document.createElement("div")
+    particle.style.cssText = `
+            position: absolute;
+            width: ${Math.random() * 4 + 1}px;
+            height: ${Math.random() * 4 + 1}px;
+            background: rgba(${Math.random() * 100 + 155}, ${Math.random() * 100 + 155}, 255, ${Math.random() * 0.3 + 0.1});
+            border-radius: 50%;
+            top: ${Math.random() * 100}%;
+            left: ${Math.random() * 100}%;
+            animation: float ${Math.random() * 10 + 5}s ease-in-out infinite;
+            animation-delay: ${Math.random() * 5}s;
+            pointer-events: none;
+        `
+    particlesContainer.appendChild(particle)
+  }
+}
+
+// Event Listeners Initialization
 function initializeEventListeners() {
-  console.log("Initializing event listeners...")
+  console.log("🎯 Initializing event listeners...")
 
   // Mobile menu toggle
   const mobileMenuBtn = document.getElementById("mobile-menu-btn")
@@ -128,94 +180,52 @@ function initializeEventListeners() {
 
   if (searchInput) {
     searchInput.addEventListener("input", (e) => handleSearch(e.target.value))
+    searchInput.addEventListener("focus", () => addSearchFocus(searchInput))
+    searchInput.addEventListener("blur", () => removeSearchFocus(searchInput))
   }
+
   if (mobileSearchInput) {
     mobileSearchInput.addEventListener("input", (e) => handleSearch(e.target.value))
   }
+
   if (searchClear) {
     searchClear.addEventListener("click", clearSearch)
   }
+
   if (mobileSearchClear) {
     mobileSearchClear.addEventListener("click", clearSearch)
   }
 
-  // View mode toggle
+  // View mode controls
   const viewBtns = document.querySelectorAll(".view-btn, .mobile-view-btn")
   viewBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const mode = e.currentTarget.dataset.mode
       setViewMode(mode)
-      if (isMobileMenuOpen) {
-        toggleMobileMenu()
-      }
+      if (isMobileMenuOpen) toggleMobileMenu()
     })
   })
 
-  // Expand all buttons
-  const expandAllBtn = document.getElementById("expand-all-btn")
-  const mobileExpandBtn = document.getElementById("mobile-expand-btn")
-
-  if (expandAllBtn) {
-    expandAllBtn.addEventListener("click", () => {
+  // Expand/Collapse controls
+  const expandBtns = document.querySelectorAll("#expand-all-btn, #mobile-expand-btn")
+  expandBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
       toggleAllFamilies()
+      if (isMobileMenuOpen) toggleMobileMenu()
     })
-  }
-  if (mobileExpandBtn) {
-    mobileExpandBtn.addEventListener("click", () => {
-      toggleAllFamilies()
-      if (isMobileMenuOpen) {
-        toggleMobileMenu()
-      }
-    })
-  }
+  })
+
+  // Keyboard shortcuts
+  document.addEventListener("keydown", handleKeyboardShortcuts)
+
+  console.log("✅ Event listeners initialized")
 }
 
-// Create animated data particles
-function createDataParticles() {
-  const particlesContainer = document.querySelector(".data-particles")
-  if (!particlesContainer) return
-
-  // Clear existing particles
-  particlesContainer.innerHTML = ""
-
-  // Create 30 particles
-  for (let i = 0; i < 30; i++) {
-    const particle = document.createElement("div")
-    particle.className = "data-particle"
-    particle.style.cssText = `
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(6, 182, 212, 0.6);
-            border-radius: 50%;
-            animation: ping ${2 + Math.random() * 3}s ease-in-out infinite;
-            animation-delay: ${i * 200}ms;
-            top: ${Math.random() * 100}%;
-            left: ${Math.random() * 100}%;
-        `
-    particlesContainer.appendChild(particle)
-  }
-}
-
-// Utility functions
-function getBranchColorClass(branch) {
-  const hash = branch.split("").reduce((a, b) => a + b.charCodeAt(0), 0)
-  return branchColors[hash % branchColors.length]
-}
-
-function getInitials(name) {
-  return name
-    .split(" ")
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase()
-}
-
-// Search functionality
+// Enhanced Search Functionality
 function handleSearch(searchTerm) {
   currentSearchTerm = searchTerm.toLowerCase().trim()
 
-  // Update both search inputs
+  // Sync search inputs
   const desktopInput = document.getElementById("search-input")
   const mobileInput = document.getElementById("mobile-search-input")
 
@@ -233,43 +243,40 @@ function handleSearch(searchTerm) {
   })
 
   if (currentSearchTerm === "") {
-    // No search term, show all members
     filteredMembers = [...familyData]
     hideSearchInfo()
   } else {
-    // Filter members based on search term
+    // Enhanced search with multiple criteria
     filteredMembers = familyData.filter(
       (member) =>
         member.name.toLowerCase().includes(currentSearchTerm) ||
         (member.profession && member.profession.toLowerCase().includes(currentSearchTerm)) ||
         (member.qualification && member.qualification.toLowerCase().includes(currentSearchTerm)) ||
-        member.branch.toLowerCase().includes(currentSearchTerm),
+        member.branch.toLowerCase().includes(currentSearchTerm) ||
+        (member.contact && member.contact.includes(currentSearchTerm)),
     )
     showSearchInfo()
   }
 
   renderFamilyTree()
+  updateStatsPanel()
 }
 
 function clearSearch() {
   currentSearchTerm = ""
   filteredMembers = [...familyData]
 
-  // Clear both search inputs
-  const desktopInput = document.getElementById("search-input")
-  const mobileInput = document.getElementById("mobile-search-input")
-
-  if (desktopInput) desktopInput.value = ""
-  if (mobileInput) mobileInput.value = ""
+  // Clear inputs
+  const inputs = document.querySelectorAll("#search-input, #mobile-search-input")
+  inputs.forEach((input) => (input.value = ""))
 
   // Hide clear buttons
   const clearButtons = document.querySelectorAll("#search-clear, #mobile-search-clear")
-  clearButtons.forEach((btn) => {
-    btn.style.display = "none"
-  })
+  clearButtons.forEach((btn) => (btn.style.display = "none"))
 
   hideSearchInfo()
   renderFamilyTree()
+  updateStatsPanel()
 }
 
 function showSearchInfo() {
@@ -293,16 +300,27 @@ function hideSearchInfo() {
   const searchInfo = document.getElementById("search-info")
   const resultsCounts = document.querySelectorAll("#search-results-count, #mobile-search-results-count")
 
-  if (searchInfo) {
-    searchInfo.style.display = "none"
-  }
-
-  resultsCounts.forEach((count) => {
-    count.style.display = "none"
-  })
+  if (searchInfo) searchInfo.style.display = "none"
+  resultsCounts.forEach((count) => (count.style.display = "none"))
 }
 
-// View mode functions
+function addSearchFocus(input) {
+  const container = input.closest(".search-container")
+  if (container) {
+    container.style.borderColor = "rgba(255, 255, 255, 0.4)"
+    container.style.boxShadow = "0 0 0 2px rgba(0, 212, 255, 0.3)"
+  }
+}
+
+function removeSearchFocus(input) {
+  const container = input.closest(".search-container")
+  if (container) {
+    container.style.borderColor = "rgba(255, 255, 255, 0.2)"
+    container.style.boxShadow = "none"
+  }
+}
+
+// View Mode Management
 function setViewMode(mode) {
   currentViewMode = mode
 
@@ -310,15 +328,10 @@ function setViewMode(mode) {
   document.querySelectorAll(".view-btn").forEach((btn) => btn.classList.remove("active"))
   document.querySelectorAll(".mobile-view-btn").forEach((btn) => btn.classList.remove("active"))
 
-  if (mode === "generation") {
-    document.querySelector(".view-btn[data-mode='generation']")?.classList.add("active")
-    document.querySelector(".mobile-view-btn[data-mode='generation']")?.classList.add("active")
-  } else {
-    document.querySelector(".view-btn[data-mode='family']")?.classList.add("active")
-    document.querySelector(".mobile-view-btn[data-mode='family']")?.classList.add("active")
-  }
+  const activeButtons = document.querySelectorAll(`[data-mode="${mode}"]`)
+  activeButtons.forEach((btn) => btn.classList.add("active"))
 
-  // Show/hide expand all button
+  // Show/hide expand controls
   const expandBtns = document.querySelectorAll("#expand-all-btn, #mobile-expand-btn")
   expandBtns.forEach((btn) => {
     btn.style.display = mode === "family" ? "flex" : "none"
@@ -333,10 +346,10 @@ function toggleAllFamilies() {
 
   if (collapsedFamilies.size === allHeadIds.length) {
     collapsedFamilies.clear()
-    updateExpandAllButton("Collapse All")
+    updateExpandAllButton("Expand All")
   } else {
     collapsedFamilies = new Set(allHeadIds)
-    updateExpandAllButton("Expand All")
+    updateExpandAllButton("Collapse All")
   }
 
   renderFamilyTree()
@@ -348,7 +361,7 @@ function updateExpandAllButton(text) {
     if (btn.tagName === "SPAN") {
       btn.textContent = text
     } else {
-      btn.innerHTML = `<i class="fas fa-eye"></i> ${text}`
+      btn.innerHTML = `<i class="fas fa-expand-arrows-alt"></i> ${text}`
     }
   })
 }
@@ -362,25 +375,25 @@ function toggleFamilyCollapse(headId) {
   renderFamilyTree()
 }
 
-// Mobile menu functions
+// Mobile Menu Management
 function toggleMobileMenu() {
   const mobileMenu = document.getElementById("mobile-menu")
-  const menuIcon = document.getElementById("mobile-menu-icon")
+  const menuBtn = document.getElementById("mobile-menu-btn")
 
-  if (mobileMenu && menuIcon) {
+  if (mobileMenu && menuBtn) {
     if (mobileMenu.classList.contains("show")) {
       mobileMenu.classList.remove("show")
-      menuIcon.className = "fas fa-bars"
+      menuBtn.classList.remove("active")
       isMobileMenuOpen = false
     } else {
       mobileMenu.classList.add("show")
-      menuIcon.className = "fas fa-times"
+      menuBtn.classList.add("active")
       isMobileMenuOpen = true
     }
   }
 }
 
-// Data manipulation functions
+// Data Processing Functions
 function getGenerations() {
   const generations = {}
   filteredMembers.forEach((member) => {
@@ -406,9 +419,7 @@ function getAllDescendants(parentId) {
       const spouse = filteredMembers.find(
         (member) => member.name === child.spouse && member.generation === child.generation,
       )
-      if (spouse) {
-        descendants.push(spouse)
-      }
+      if (spouse) descendants.push(spouse)
     }
     descendants.push(...getAllDescendants(child.id))
   })
@@ -442,24 +453,76 @@ function groupSpouses(members) {
   return grouped
 }
 
-// Rendering functions
+// Utility Functions
+function getBranchColorClass(branch) {
+  const hash = branch.split("").reduce((a, b) => a + b.charCodeAt(0), 0)
+  return branchColors[hash % branchColors.length]
+}
+
+function getInitials(name) {
+  return name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase()
+    .substring(0, 3)
+}
+
+function formatProfession(profession) {
+  if (!profession) return ""
+  return profession.charAt(0).toUpperCase() + profession.slice(1)
+}
+
+// Stats Panel Management
+function updateStatsPanel() {
+  const totalMembersEl = document.getElementById("total-members")
+  if (totalMembersEl) {
+    totalMembersEl.textContent = filteredMembers.length
+  }
+}
+
+// Keyboard Shortcuts
+function handleKeyboardShortcuts(e) {
+  if (e.ctrlKey || e.metaKey) {
+    switch (e.key) {
+      case "f":
+        e.preventDefault()
+        const searchInput = document.getElementById("search-input")
+        if (searchInput) searchInput.focus()
+        break
+      case "1":
+        e.preventDefault()
+        setViewMode("generation")
+        break
+      case "2":
+        e.preventDefault()
+        setViewMode("family")
+        break
+    }
+  }
+
+  if (e.key === "Escape") {
+    if (isMobileMenuOpen) toggleMobileMenu()
+    if (currentSearchTerm) clearSearch()
+  }
+}
+
+// Main Rendering Functions
 function renderFamilyTree() {
-  console.log("Rendering family tree...")
+  console.log("🎨 Rendering family tree...")
   const container = document.getElementById("family-tree-container")
   const noResults = document.getElementById("no-results")
 
   if (!container || !noResults) {
-    console.error("Container or noResults element not found")
+    console.error("❌ Container elements not found")
     return
   }
 
   if (filteredMembers.length === 0 && currentSearchTerm !== "") {
-    // Show no results message
     container.style.display = "none"
     noResults.style.display = "flex"
     return
   } else {
-    // Hide no results message
     container.style.display = "block"
     noResults.style.display = "none"
   }
@@ -470,7 +533,19 @@ function renderFamilyTree() {
     container.innerHTML = renderFamilyView()
   }
 
-  console.log("Family tree rendered successfully")
+  // Add smooth animations to newly rendered elements
+  const cards = container.querySelectorAll(".member-card")
+  cards.forEach((card, index) => {
+    card.style.opacity = "0"
+    card.style.transform = "translateY(20px)"
+    setTimeout(() => {
+      card.style.transition = "all 0.5s ease"
+      card.style.opacity = "1"
+      card.style.transform = "translateY(0)"
+    }, index * 50)
+  })
+
+  console.log("✅ Family tree rendered successfully")
 }
 
 function renderGenerationView() {
@@ -488,34 +563,32 @@ function renderGenerationView() {
       const groupedMembers = groupSpouses(members)
 
       return `
-                <div class="generation-section">
-                    <div class="generation-label">
-                        <div class="generation-badge">
-                            <div class="generation-badge-content">
-                                <i class="fas fa-star"></i>
-                                <span>GENERATION ${generation}</span>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="members-grid">
-                        ${groupedMembers
-                          .map((memberOrPair) => {
-                            if (Array.isArray(memberOrPair)) {
-                              return `
-                                        <div class="spouse-pair">
-                                            ${memberOrPair.map((member) => renderMemberCard(member, true)).join("")}
-                                            <div class="marriage-line"></div>
-                                        </div>
-                                    `
-                            } else {
-                              return renderMemberCard(memberOrPair)
-                            }
-                          })
-                          .join("")}
+            <div class="generation-section">
+                <div class="generation-label">
+                    <div class="generation-badge">
+                        <i class="fas fa-star"></i>
+                        <span>GENERATION ${generation}</span>
+                        <i class="fas fa-star"></i>
                     </div>
                 </div>
-            `
+                <div class="members-grid">
+                    ${groupedMembers
+                      .map((memberOrPair) => {
+                        if (Array.isArray(memberOrPair)) {
+                          return `
+                                <div class="spouse-pair">
+                                    ${memberOrPair.map((member) => renderMemberCard(member, true)).join("")}
+                                    <div class="marriage-line"></div>
+                                </div>
+                            `
+                        } else {
+                          return renderMemberCard(memberOrPair)
+                        }
+                      })
+                      .join("")}
+                </div>
+            </div>
+        `
     })
     .join("")
 }
@@ -536,63 +609,61 @@ function renderFamilyView() {
       const isCollapsed = collapsedFamilies.has(head.id)
 
       return `
-                <div class="family-section">
-                    <div class="family-header">
-                        <div class="family-title">
-                            <div class="family-title-content">
-                                <i class="fas fa-crown"></i>
-                                <span>${head.name} FAMILY</span>
-                                <i class="fas fa-crown"></i>
-                            </div>
-                        </div>
-                        <button class="family-toggle" onclick="toggleFamilyCollapse('${head.id}')">
-                            <i class="fas fa-chevron-${isCollapsed ? "down" : "up"}"></i>
-                            ${isCollapsed ? "Expand Family" : "Collapse Family"}
-                        </button>
+            <div class="family-section">
+                <div class="family-header">
+                    <div class="family-title">
+                        <i class="fas fa-crown"></i>
+                        <span>${head.name} FAMILY</span>
+                        <i class="fas fa-crown"></i>
                     </div>
-                    
-                    ${
-                      !isCollapsed
-                        ? `
-                            <div class="family-content">
-                                <div class="family-heads">
-                                    <div class="spouse-pair">
-                                        ${renderMemberCard(head)}
-                                        ${
-                                          spouse
-                                            ? `
-                                                <div class="marriage-line"></div>
-                                                ${renderMemberCard(spouse)}
-                                            `
-                                            : ""
-                                        }
-                                    </div>
-                                </div>
-                                
+                    <button class="family-toggle" onclick="toggleFamilyCollapse('${head.id}')">
+                        <i class="fas fa-chevron-${isCollapsed ? "down" : "up"}"></i>
+                        <span>${isCollapsed ? "Expand Family" : "Collapse Family"}</span>
+                    </button>
+                </div>
+                
+                ${
+                  !isCollapsed
+                    ? `
+                    <div class="family-content">
+                        <div class="family-heads">
+                            <div class="spouse-pair">
+                                ${renderMemberCard(head)}
                                 ${
-                                  descendants.length > 0
+                                  spouse
                                     ? `
-                                        <div class="descendants">
-                                            ${renderDescendantsByGeneration(descendants)}
-                                        </div>
-                                    `
+                                    <div class="marriage-line"></div>
+                                    ${renderMemberCard(spouse)}
+                                `
                                     : ""
                                 }
                             </div>
-                        `
-                        : `
-                            <div class="collapsed-state">
-                                <div class="collapsed-info">
-                                    <div class="collapsed-info-content">
-                                        <i class="fas fa-eye-slash"></i>
-                                        <span>Family tree collapsed • ${descendants.length} members hidden</span>
-                                    </div>
-                                </div>
+                        </div>
+                        
+                        ${
+                          descendants.length > 0
+                            ? `
+                            <div class="descendants">
+                                ${renderDescendantsByGeneration(descendants)}
                             </div>
                         `
-                    }
-                </div>
-            `
+                            : ""
+                        }
+                    </div>
+                `
+                    : `
+                    <div class="collapsed-state">
+                        <div class="collapsed-info">
+                            <div class="collapsed-info-content">
+                                <i class="fas fa-eye-slash"></i>
+                                <span>Family tree collapsed • ${descendants.length} members hidden</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+                }
+            </div>
+        `
     })
     .join("")
 }
@@ -614,30 +685,30 @@ function renderDescendantsByGeneration(descendants) {
       const groupedDescendants = groupSpouses(genDescendants)
 
       return `
-                <div class="generation-group">
-                    <div class="generation-group-label">
-                        <div class="generation-group-badge">
-                            <span>Generation ${gen}</span>
-                        </div>
-                    </div>
-                    <div class="members-grid">
-                        ${groupedDescendants
-                          .map((memberOrPair) => {
-                            if (Array.isArray(memberOrPair)) {
-                              return `
-                                        <div class="spouse-pair">
-                                            ${memberOrPair.map((member) => renderMemberCard(member, true)).join("")}
-                                            <div class="marriage-line"></div>
-                                        </div>
-                                    `
-                            } else {
-                              return renderMemberCard(memberOrPair, true)
-                            }
-                          })
-                          .join("")}
+            <div class="generation-group">
+                <div class="generation-group-label">
+                    <div class="generation-group-badge">
+                        <span>Generation ${gen}</span>
                     </div>
                 </div>
-            `
+                <div class="members-grid">
+                    ${groupedDescendants
+                      .map((memberOrPair) => {
+                        if (Array.isArray(memberOrPair)) {
+                          return `
+                                <div class="spouse-pair">
+                                    ${memberOrPair.map((member) => renderMemberCard(member, true)).join("")}
+                                    <div class="marriage-line"></div>
+                                </div>
+                            `
+                        } else {
+                          return renderMemberCard(memberOrPair, true)
+                        }
+                      })
+                      .join("")}
+                </div>
+            </div>
+        `
     })
     .join("")
 }
@@ -649,7 +720,8 @@ function renderMemberCard(member, isSpousePair = false) {
     (member.name.toLowerCase().includes(currentSearchTerm) ||
       (member.profession && member.profession.toLowerCase().includes(currentSearchTerm)) ||
       (member.qualification && member.qualification.toLowerCase().includes(currentSearchTerm)) ||
-      member.branch.toLowerCase().includes(currentSearchTerm))
+      member.branch.toLowerCase().includes(currentSearchTerm) ||
+      (member.contact && member.contact.includes(currentSearchTerm)))
 
   const cardClass = `member-card ${branchColorClass} ${member.isHead ? "family-head" : ""} ${
     member.isDeceased ? "deceased" : ""
@@ -660,10 +732,10 @@ function renderMemberCard(member, isSpousePair = false) {
             ${
               member.isHead
                 ? `
-                    <div class="crown-badge">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                `
+                <div class="crown-badge">
+                    <i class="fas fa-crown"></i>
+                </div>
+            `
                 : ""
             }
             
@@ -687,7 +759,7 @@ function renderMemberCard(member, isSpousePair = false) {
                         ? `
                         <div class="detail-item profession">
                             <i class="fas fa-briefcase"></i>
-                            <span>${member.profession}</span>
+                            <span>${formatProfession(member.profession)}</span>
                         </div>
                     `
                         : ""
@@ -764,14 +836,4 @@ function renderMemberCard(member, isSpousePair = false) {
 window.toggleFamilyCollapse = toggleFamilyCollapse
 window.clearSearch = clearSearch
 
-// Function to set familyData
-function setFamilyData(data) {
-  familyData = data
-  filteredMembers = [...familyData]
-  renderFamilyTree()
-}
-
-// Make setFamilyData globally available
-window.setFamilyData = setFamilyData
-
-console.log("Script.js loaded successfully")
+console.log("🌟 Futuristic Family Tree - Script loaded successfully")
