@@ -45,20 +45,18 @@ function loadAllFamilyData() {
 
       // Log family breakdown with current and target counts
       console.log("=== FAMILY BREAKDOWN ===")
-      console.log("1. A T Mohamed unny (Late) & P.M Kochu Rabiya:", window.family1Data.length, "/ 23 members")
-      console.log("2. A T kunjupathumma (Late) & P.K Athakutty (Late):", window.family2Data.length, "/ 147 members")
-      console.log("3. A T Pathayu (Late) & Weetiparambil Ayyutty (Late):", window.family3Data.length, "/ 50 members")
-      console.log("4. A T Nafeesakutty & M.A Bappu Moulavi (Late):", window.family4Data.length, "/ 39 members")
-      console.log("5. A.T AliKunji (Late) & P.K Kunhipathunni:", window.family5Data.length, "/ 22 members")
-      console.log("6. A.T Kunjaisu (Late) & R.V Mohammed Haji (Late):", window.family6Data.length, "/ 52 members")
-      console.log("7. A.T Aminakutty (Late) & A.M Bayu (Late):", window.family7Data.length, "/ 29 members")
-      console.log("8. A T Aboobakker (Late) & Rasiya .P.N:", window.family8Data.length, "/ 18 members")
-      console.log("9. A.T Zainba & Abdul Kadar:", window.family9Data.length, "/ 25 members")
-      console.log("10. A T Ibrahim Kutty & Zohra Ibrahim:", window.family10Data.length, "/ 16 members")
+      console.log("1. A T Mohamed unny (Late) & P.M Kochu Rabiya:", window.family1Data.length, "members")
+      console.log("2. A T kunjupathumma (Late) & P.K Athakutty (Late):", window.family2Data.length, "members")
+      console.log("3. A T Pathayu (Late) & Weetiparambil Ayyutty (Late):", window.family3Data.length, "members")
+      console.log("4. A T Nafeesakutty & M.A Bappu Moulavi (Late):", window.family4Data.length, "members")
+      console.log("5. A.T AliKunji (Late) & P.K Kunhipathunni:", window.family5Data.length, "members")
+      console.log("6. A.T Kunjaisu (Late) & R.V Mohammed Haji (Late):", window.family6Data.length, "members")
+      console.log("7. A.T Aminakutty (Late) & A.M Bayu (Late):", window.family7Data.length, "members")
+      console.log("8. A T Aboobakker (Late) & Rasiya .P.N:", window.family8Data.length, "members")
+      console.log("9. A.T Zainba & Abdul Kadar:", window.family9Data.length, "members")
+      console.log("10. A T Ibrahim Kutty & Zohra Ibrahim:", window.family10Data.length, "members")
       console.log("=========================")
-      console.log("Current Total:", allFamilyData.length, "members")
-      console.log("Target Total: 421 members")
-      console.log("Remaining to add:", 421 - allFamilyData.length, "members")
+      console.log("Total Family Members:", allFamilyData.length)
 
       return true
     }

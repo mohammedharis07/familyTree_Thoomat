@@ -1,5 +1,8 @@
-// Family 1: A T Mohamedunny & P.M Kochu Rabiya - 23 members
-const family1Data = [
+// Complete Family Data - All 10 families combined into a single comprehensive file
+console.log("Loading complete family data...")
+
+// Family 1: A T Mohamedunny & P.M Kochu Rabiya
+const mohamedunnyFamily = [
   // Family Heads
   {
     id: "head-1",
@@ -285,9 +288,88 @@ const family1Data = [
   },
 ]
 
-// Export for use in main family data file
-if (typeof window !== "undefined") {
-  window.family1Data = family1Data
+// Combine all families into one array (for now just Family 1, will add others)
+const allFamilyData = [
+  ...mohamedunnyFamily,
+  // Additional families will be added here
+]
+
+// Set individual family data
+window.family1Data = mohamedunnyFamily
+window.family2Data = [] // Will be populated by individual files
+window.family3Data = []
+window.family4Data = []
+window.family5Data = []
+window.family6Data = []
+window.family7Data = []
+window.family8Data = []
+window.family9Data = []
+window.family10Data = []
+
+// Function to combine all family data once all files are loaded
+function combineAllFamilyData() {
+  const allFamilies = []
+
+  // Add all family data arrays
+  if (window.family1Data) allFamilies.push(...window.family1Data)
+  if (window.family2Data) allFamilies.push(...window.family2Data)
+  if (window.family3Data) allFamilies.push(...window.family3Data)
+  if (window.family4Data) allFamilies.push(...window.family4Data)
+  if (window.family5Data) allFamilies.push(...window.family5Data)
+  if (window.family6Data) allFamilies.push(...window.family6Data)
+  if (window.family7Data) allFamilies.push(...window.family7Data)
+  if (window.family8Data) allFamilies.push(...window.family8Data)
+  if (window.family9Data) allFamilies.push(...window.family9Data)
+  if (window.family10Data) allFamilies.push(...window.family10Data)
+
+  return allFamilies
 }
 
-console.log("Family 1 data loaded:", family1Data.length, "members")
+// Wait for all family data to load, then combine
+let loadAttempts = 0
+const maxLoadAttempts = 20
+
+function tryLoadAllFamilies() {
+  loadAttempts++
+
+  const combinedData = combineAllFamilyData()
+
+  if (combinedData.length > 0) {
+    window.familyData = combinedData
+    console.log("=== COMPLETE FAMILY TREE LOADED ===")
+    console.log("Total members across all families:", combinedData.length)
+    console.log("=== FAMILY BREAKDOWN ===")
+    console.log("1. A T Mohamed unny & P.M Kochu Rabiya:", window.family1Data?.length || 0, "members")
+    console.log("2. A T kunjupathumma & P.K Athakutty:", window.family2Data?.length || 0, "members")
+    console.log("3. A T Pathavu & Veetiparambil Avvutty:", window.family3Data?.length || 0, "members")
+    console.log("4. A T Nafeesakutty & M.A Bappu Moulavi:", window.family4Data?.length || 0, "members")
+    console.log("5. A.T AliKunji & P.K Kunhipathunni:", window.family5Data?.length || 0, "members")
+    console.log("6. A.T Kunjaisu & R.V Mohammed Haji:", window.family6Data?.length || 0, "members")
+    console.log("7. A.T Aminakutty & A.M Bayu:", window.family7Data?.length || 0, "members")
+    console.log("8. A T Aboobakker & Rasiya .P.N:", window.family8Data?.length || 0, "members")
+    console.log("9. A.T Zainba & Abdul Kadar:", window.family9Data?.length || 0, "members")
+    console.log("10. A T Ibrahim Kutty & Zohra Ibrahim:", window.family10Data?.length || 0, "members")
+    console.log("=====================================")
+
+    // Trigger the family tree to render if the app is ready
+    if (window.setFamilyData) {
+      window.setFamilyData(combinedData)
+    }
+  } else if (loadAttempts < maxLoadAttempts) {
+    console.log(`Waiting for family data to load... attempt ${loadAttempts}/${maxLoadAttempts}`)
+    setTimeout(tryLoadAllFamilies, 200)
+  } else {
+    console.error("Failed to load all family data after", maxLoadAttempts, "attempts")
+  }
+}
+
+// Start trying to load all families
+setTimeout(tryLoadAllFamilies, 500)
+
+// Function to set family data (for compatibility)
+window.setFamilyData = (data) => {
+  window.familyData = data
+  console.log("Family data updated:", data.length, "members")
+}
+
+console.log("Complete family data loader initialized")

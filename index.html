@@ -3,107 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THOOMAT FAMILY TREE</title>
+    <title>Futuristic Family Tree</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Loading Message -->
+    <!-- Loading Screen -->
     <div id="loading-message" class="loading-screen">
         <div class="loading-content">
-            <div class="loading-spinner"></div>
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
             <h2>Loading Family Tree Data...</h2>
-            <p>Please wait while we prepare your family heritage</p>
+            <p>Gathering information from all 10 family branches</p>
+            <div class="loading-progress">
+                <div class="progress-bar"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Error Message -->
+    <!-- Error Screen -->
     <div id="error-message" class="error-screen" style="display: none;">
         <div class="error-content">
-            <div class="error-icon">⚠️</div>
-            <h2>Failed to Load Family Data</h2>
-            <p>There was an error loading the family tree data.</p>
-            <p>Please check the console for more details.</p>
-            <button onclick="location.reload()" class="retry-button">🔄 Retry</button>
-        </div>
-    </div>
-
-    <!-- No Results Message -->
-    <div id="no-results" class="no-results-screen" style="display: none;">
-        <div class="no-results-content">
-            <div class="no-results-icon">🔍</div>
-            <h2>No Results Found</h2>
-            <p>No family members match your search criteria.</p>
-            <button onclick="clearSearch()" class="clear-search-btn">Clear Search</button>
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Unable to Load Family Data</h2>
+            <p>There was an error loading the family tree information. Please refresh the page to try again.</p>
+            <button onclick="location.reload()" class="retry-btn">
+                <i class="fas fa-refresh"></i>
+                Retry
+            </button>
         </div>
     </div>
 
     <!-- Main Application -->
-    <div id="app" class="app-container" style="display: none;">
+    <div id="app" style="display: none;">
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <div class="logo">
-                    <div class="logo-icon">🌳</div>
-                    <div class="logo-text">
-                        <h1>THOOMAT FAMILY TREE</h1>
-                        <p>📚 Digital Heritage • 🌐 Connected Generations</p>
+                <div class="header-left">
+                    <div class="logo">
+                        <i class="fas fa-sitemap"></i>
+                        <span>Family Tree</span>
+                    </div>
+                    <div class="family-info">
+                        <span class="family-name">Complete Family Heritage</span>
+                        <span class="family-subtitle">10 Families • Multiple Generations</span>
                     </div>
                 </div>
                 
-                <!-- Mobile Menu Button -->
-                <button id="mobile-menu-btn" class="mobile-menu-btn">
-                    <i id="mobile-menu-icon" class="fas fa-bars"></i>
-                </button>
-                
-                <!-- Desktop Controls -->
-                <div class="header-controls desktop-only">
+                <div class="header-center">
                     <div class="search-container">
-                        <input type="text" id="search-input" placeholder="Search family members..." class="search-input">
-                        <div class="search-icon">🔍</div>
-                        <button id="search-clear" class="search-clear" style="display: none;">✕</button>
-                        <div id="search-results-count" class="search-results-count" style="display: none;"></div>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-input" placeholder="Search family members...">
+                            <button id="search-clear" class="search-clear" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div id="search-results-count" class="search-results" style="display: none;"></div>
                     </div>
-                    
+                </div>
+                
+                <div class="header-right">
                     <div class="view-controls">
                         <button class="view-btn active" data-mode="generation">
                             <i class="fas fa-layer-group"></i>
-                            <span>Generation View</span>
+                            <span>Generation</span>
                         </button>
                         <button class="view-btn" data-mode="family">
-                            <i class="fas fa-sitemap"></i>
-                            <span>Family View</span>
+                            <i class="fas fa-users"></i>
+                            <span>Family</span>
                         </button>
-                        <button id="expand-all-btn" class="expand-all-btn" style="display: none;">
+                        <button id="expand-all-btn" class="expand-btn" style="display: none;">
                             <i class="fas fa-eye"></i>
                             <span>Expand All</span>
                         </button>
                     </div>
+                    
+                    <button id="mobile-menu-btn" class="mobile-menu-btn">
+                        <i id="mobile-menu-icon" class="fas fa-bars"></i>
+                    </button>
                 </div>
             </div>
         </header>
 
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="mobile-menu">
-            <div class="mobile-search-container">
-                <input type="text" id="mobile-search-input" placeholder="Search family members..." class="mobile-search-input">
-                <button id="mobile-search-clear" class="mobile-search-clear" style="display: none;">✕</button>
-                <div id="mobile-search-results-count" class="mobile-search-results-count" style="display: none;"></div>
-            </div>
-            
-            <div class="mobile-view-controls">
-                <button class="mobile-view-btn active" data-mode="generation">
-                    <i class="fas fa-layer-group"></i>
-                    Generation View
-                </button>
-                <button class="mobile-view-btn" data-mode="family">
-                    <i class="fas fa-sitemap"></i>
-                    Family View
-                </button>
-                <button id="mobile-expand-btn" class="mobile-expand-btn" style="display: none;">
-                    <i class="fas fa-eye"></i>
-                    Expand All
-                </button>
+            <div class="mobile-menu-content">
+                <div class="mobile-search">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="mobile-search-input" placeholder="Search family members...">
+                        <button id="mobile-search-clear" class="search-clear" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="mobile-search-results-count" class="search-results" style="display: none;"></div>
+                </div>
+                
+                <div class="mobile-view-controls">
+                    <button class="mobile-view-btn active" data-mode="generation">
+                        <i class="fas fa-layer-group"></i>
+                        Generation View
+                    </button>
+                    <button class="mobile-view-btn" data-mode="family">
+                        <i class="fas fa-users"></i>
+                        Family View
+                    </button>
+                    <button id="mobile-expand-btn" class="mobile-expand-btn" style="display: none;">
+                        <i class="fas fa-eye"></i>
+                        Expand All
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -121,20 +136,31 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Data Particles Background -->
             <div class="data-particles"></div>
             
             <!-- Family Tree Container -->
-            <div id="family-tree-container" class="family-tree-container" style="display: none;">
-                <!-- Family tree will be rendered here by JavaScript -->
+            <div id="family-tree-container" class="family-tree-container">
+                <!-- Family tree content will be dynamically generated here -->
+            </div>
+            
+            <!-- No Results Message -->
+            <div id="no-results" class="no-results" style="display: none;">
+                <div class="no-results-content">
+                    <div class="no-results-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>No Results Found</h3>
+                    <p>No family members match your search criteria. Try different keywords or clear the search.</p>
+                    <button onclick="clearSearch()" class="clear-search-btn">
+                        <i class="fas fa-times"></i>
+                        Clear Search
+                    </button>
+                </div>
             </div>
         </main>
     </div>
 
-    <!-- Load Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Load individual family data files first -->
+    <!-- Load all family data files in order -->
     <script src="family-1-mohamed-unny.js"></script>
     <script src="family-2-kunjupathumma.js"></script>
     <script src="family-3-pathayu.js"></script>
@@ -146,10 +172,10 @@
     <script src="family-9-zainba.js"></script>
     <script src="family-10-ibrahim-kutty.js"></script>
     
-    <!-- Load main family data file that combines all families -->
-    <script src="family-data.js"></script>
+    <!-- Load the complete family data combiner -->
+    <script src="complete-family-data.js"></script>
     
-    <!-- Load main application script -->
+    <!-- Load the main application script -->
     <script src="script.js"></script>
 </body>
 </html>
